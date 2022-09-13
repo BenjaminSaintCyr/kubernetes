@@ -70,6 +70,7 @@ import (
 	aggregatorscheme "k8s.io/kube-aggregator/pkg/apiserver/scheme"
 	netutils "k8s.io/utils/net"
 
+	lttng "github.com/BenjaminSaintCyr/k8s-lttng-tpp"
 	"k8s.io/kubernetes/cmd/kube-apiserver/app/options"
 	"k8s.io/kubernetes/pkg/api/legacyscheme"
 	"k8s.io/kubernetes/pkg/capabilities"
@@ -90,6 +91,10 @@ func init() {
 
 // NewAPIServerCommand creates a *cobra.Command object with default parameters
 func NewAPIServerCommand() *cobra.Command {
+	start := time.Now()
+	lttng.ReportStartSpan(1, 1, 1, 1, "new etcd3 client", start)
+	defer lttng.ReportEndSpan(1, 1, 1, time.Now().Sub(start))
+
 	s := options.NewServerRunOptions()
 	cmd := &cobra.Command{
 		Use: "kube-apiserver",
